@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="images/ber_1_.ico" rel="shortcut icon" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <title>Mine jogo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      @font-face {
+        src: url(fonts/PressStart2P/PressStart2P-Regular.ttf);
+        font-family: PressStart2p;
+      }
+
+      .game-board {
+        width: 100%;
+        height: 600px;
+        border-bottom: 1px solid;
+
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+      }
+      .pipe {
+        position: absolute;
+        bottom: 10;
+        width: 80px;
+        margin-top: 430px;
+
+        animation: pipe-animation 2s infinite linear;
+      }
+      .mario {
+        position: absolute;
+        bottom: 10;
+        width: 140px;
+        margin-top: 400px;
+      }
+      .jump {
+        animation: jump 700ms ease-out;
+      }
+      #res {
+        font-family: PressStart2p;
+      }
+
+      #end {
+        position: absolute;
+        top: 40px;
+        left: 30vw;
+      }
+
+      #end p {
+        position: relative;
+        top: -90px;
+      }
+
+      div {
+        text-align: center;
+        margin-top: 0px;
+      }
+
+      .clouds {
+        margin-top: 70px;
+        width: 550px;
+        position: absolute;
+        animation: clouds-animation 20s infinite linear;
+        border-radius: 5px;
+      }
+
+      .btn {
+        background-color: bisque;
+        width: 500px;
+        position: relative;
+        top: -60px;
+        font-family: PressStart2p;
+        padding: 10px 25px;
+        cursor: pointer;
+        border-radius: 10px;
+        text-decoration: none;
+      }
+
+      .btn:hover {
+        background: #ff5e5e;
+      }
+
+      .chao {
+        margin-top: 70px;
+        width: 100%;
+        height: 100%;
+      }
+
+      @keyframes pipe-animation {
+        from {
+          right: -80%;
+        }
+        to {
+          right: 100%;
+        }
+      }
+      @keyframes jump {
+        0% {
+          bottom: 30;
+        }
+        30% {
+          bottom: 180px;
+        }
+        40% {
+          bottom: 180px;
+        }
+        50% {
+          bottom: 180px;
+        }
+        60% {
+          bottom: 180px;
+        }
+        100% {
+          bottom: 0;
+        }
+      }
+      @keyframes clouds-animation {
+        from {
+          right: -550px;
+        }
+        to {
+          right: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-board">
+      <img src="imagesM/clouds.png" alt="clouds" class="clouds" />
+
+      <img src="imagesM/mario.gif" alt="mariogif" class="mario" />
+
+      <img src="imagesM/pipe.png" alt="pipemario" class="pipe" />
+      <img src="imagesM/chao.jpg" alt="chao" class="chao" />
+    </div>
+    <div id="res"></div>
+  </body>
+  <script>
+    const mario = document.querySelectorAll(".mario")[0];
+    const pipe = document.querySelectorAll(".pipe")[0];
+
+    var res = document.querySelector("div#res");
+
+    const som_hit = new Audio();
+    som_hit.src = "songs/efeitos_hit.wav";
+    const jumpi = new Audio();
+    jumpi.src = "songs/pulo.mp3";
+
+    const jump = () => {
+      mario.classList.add("jump");
+      jumpi.play();
+      setTimeout(() => {
+        mario.classList.remove("jump");
+      }, 500);
+    };
+    const loop = setInterval(() => {
+      const pipePosition = pipe.offsetLeft;
+      const marioPosition = +window
+        .getComputedStyle(mario)
+        .bottom.replace("px", "");
+      if (pipePosition <= 170 && pipePosition > 0 && marioPosition < 80) {
+        const retorno = () => {
+          return true;
+        };
+
+        pipe.style.animation = "none";
+        pipe.style.left = `${pipePosition}px`;
+
+        mario.style.animation = "none";
+        mario.style.left = `${marioPosition}px`;
+
+        mario.src = "imagesM/game-over.png";
+        mario.style.width = "75px";
+        mario.style.marginLeft = "35px";
+        som_hit.play();
+
+        res.innerHTML = `<div  id="end"><img src="imagesM/GO.png"><br> <p>clicle para recomeçar</p>
+
+                       
+                <a class="btn" href="mario.html">Start</a></div>`;
+
+        clearInterval(loop);
+      }
+    }, 10);
+
+    document.addEventListener("keydown", jump);
+  </script>
+</html>
